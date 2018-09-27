@@ -63,12 +63,13 @@ class UserController extends Controller
         } else {
             $user = new User();
             if (MVC::$request['method'] == 'POST') {
-                $user->charge(MVC::$request['post']['amount']);
+                if (!$user->charge(MVC::$request['post']['amount'])) {
+                    $this->view->render('user/settings', $this->layout, ['user' => $user->getUserInfo(), 'error' => 'Невозможно списать средства!']);
+                }
             }
             $this->view->render('user/settings', $this->layout, ['user' => $user->getUserInfo()]);
         }
     }
-
 }
 
 ?>
