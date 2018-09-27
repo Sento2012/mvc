@@ -62,14 +62,15 @@ class UserController extends Controller
             $this->view->redirect('user/registration');
         } else {
             $user = new User();
-            if (MVC::$request['method'] == 'POST') {
+            if (MVC::$request['method'] == 'POST' && MVC::checkCSRF(MVC::$request['post']['csrf'])) {
                 if (!$user->charge(MVC::$request['post']['amount'])) {
-                    $this->view->render('user/settings', $this->layout, ['user' => $user->getUserInfo(), 'error' => 'Невозможно списать средства!']);
+                    $this->view->render('user/settings', $this->layout, ['user' => $user->getUserInfo(), 'error' => 'Невозможно списать средства!', 'csrf' => MVC::getCSRF()]);
                 }
             }
-            $this->view->render('user/settings', $this->layout, ['user' => $user->getUserInfo()]);
+            $this->view->render('user/settings', $this->layout, ['user' => $user->getUserInfo(), 'csrf' => MVC::getCSRF()]);
         }
     }
+
 }
 
 ?>
